@@ -24,7 +24,7 @@ resource "aws_ecs_service" "ECSService" {
     type = "spread"
     field = "instanceId"
   }
-  depends_on = ["aws_lb_listener_rule.HTTPListener", "aws_lb_listener_rule.HTTPSListener"]
+  depends_on = ["aws_lb_listener_rule.HTTPListener"]
 }
 
 resource "aws_ecs_service" "ECSServiceWithoutLB" {
