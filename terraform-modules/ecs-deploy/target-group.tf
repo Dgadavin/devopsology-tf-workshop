@@ -37,18 +37,18 @@ resource "aws_lb_listener_rule" "HTTPListener" {
   }
 }
 
-resource "aws_lb_listener_rule" "HTTPSListener" {
-  count = "${var.lb_enabled ? 1 : 0}"
-  listener_arn = "${var.https_listener_arn}"
-  priority     = "${random_integer.priority.result}"
-
-  action {
-    type             = "forward"
-    target_group_arn = "${aws_lb_target_group.TargetGroup.arn}"
-  }
-
-  condition {
-    field  = "host-header"
-    values = ["${var.route53_fqdn}"]
-  }
-}
+# resource "aws_lb_listener_rule" "HTTPSListener" {
+#   count = "${var.lb_enabled ? 1 : 0}"
+#   listener_arn = "${var.https_listener_arn}"
+#   priority     = "${random_integer.priority.result}"
+#
+#   action {
+#     type             = "forward"
+#     target_group_arn = "${aws_lb_target_group.TargetGroup.arn}"
+#   }
+#
+#   condition {
+#     field  = "host-header"
+#     values = ["${var.route53_fqdn}"]
+#   }
+# }
