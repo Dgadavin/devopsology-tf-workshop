@@ -1,5 +1,5 @@
-variable "ami_id" { default = "ami-0bbc25e23a7640b9b" }
-variable "aws_region" { default = "eu-west-1" }
+variable "ami_id" { default = "ami-00eb20669e0990cb4" }
+variable "aws_region" { default = "us-east-1" }
 variable "subnet_id" {}
 variable "instance_type" { default = "t2.micro" }
 variable "vpc_id" {}

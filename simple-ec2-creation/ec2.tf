@@ -1,9 +1,9 @@
 # data "terraform_remote_state" "base-stack" {
 #   backend = "s3"
 #   config = {
-#     bucket = "terraform-dp-dev-state"
+#     bucket = "@@bucket@@"
 #     key    = "ec2Creation/terraform.tfstate"
-#     region = "eu-west-1"
+#     region = "us-east-1"
 #   }
 # }
 

@@ -22,7 +22,7 @@ This module will create:
 | scale_max_capacity | Maximum instances in ASG | string | 4 | no |
 | scale_min_capacity | Minimum instances in ASG | string | 2 | no |
 | desired_capacity | Number of instances in ASG | string | 2 | no |
-| availability_zones | List of availability zones | list | "eu-west-1b", "eu-west-1c", "eu-west-1a" | no |
+| availability_zones | List of availability zones | list | "us-east-1b", "us-east-1c", "us-east-1a" | no |
 | lifecycle_hook | Provide true if you want to create lifecycle hook | boolean | false | no |
 | notify_target | SNS or SQS ARN | string | | yes |
 | notify_role_arn | Role ARN with permissions for SNS and SQS | string | no |

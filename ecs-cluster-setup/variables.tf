@@ -5,5 +5,5 @@ variable "environment" {}
 #Common variables
 variable "ClusterName" {}
 variable "CertificateARN" { default = "" }
-variable "AmiId" { default = "ami-0d2aaec13a6b7e7ca" }
+variable "AmiId" { default = "ami-0b84afb18c43907ba" }
 variable "ssh_key_name" {}

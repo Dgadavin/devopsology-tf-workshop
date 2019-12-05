@@ -14,6 +14,6 @@ output "ApplicationLoadBalancerHttpListener" {
   value = "${aws_alb_listener.http.arn}"
 }
 
-output "ApplicationLoadBalancerHttpsListener" {
-  value = "${aws_alb_listener.https.arn}"
-}
+# output "ApplicationLoadBalancerHttpsListener" {
+#   value = "${aws_alb_listener.https.arn}"
+# }

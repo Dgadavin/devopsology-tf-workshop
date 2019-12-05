@@ -41,8 +41,8 @@ aws configure
 Before start we need to set ENV variables
 ```bash
 cd simple-ec2-creation
-export TF_VAR_vpc_id=$(aws ec2 describe-vpcs --filters "Name=isDefault, Values=true" --query 'Vpcs[*].{id:VpcId}' --output text --region eu-central-1)
-export TF_VAR_subnet_id=$(aws ec2 describe-subnets --query 'Subnets[0].{id:SubnetId}' --output text --region eu-central-1)
+export TF_VAR_vpc_id=$(aws ec2 describe-vpcs --filters "Name=isDefault, Values=true" --query 'Vpcs[*].{id:VpcId}' --output text --region us-east-1)
+export TF_VAR_subnet_id=$(aws ec2 describe-subnets --query 'Subnets[0].{id:SubnetId}' --output text --region us-east-1)
 export TF_VAR_env=dev
 ```
 
@@ -95,4 +95,36 @@ grep -Rl '@@bucket@@' . | xargs sed -i's/@@bucket@@/${BUCKET_NAME}/g' # On Linux
 terraform init -backend-config=config/${TF_VAR_env}-state.conf
 terraform plan -var-file=environment/${TF_VAR_env}.tfvars
 terraform apply -var-file=environment/${TF_VAR_env}.tfvars
+```
+
+## Deploy nginx to ECS
+
+```bash
+cd ecs-service
+export TF_VAR_env=dev
+grep -Rl '@@bucket@@' . | xargs sed -i.bac -e 's/@@bucket@@/${BUCKET_NAME}/g' # For MAC
+grep -Rl '@@bucket@@' . | xargs sed -i's/@@bucket@@/${BUCKET_NAME}/g' # On Linux
+terraform init -backend-config=config/${TF_VAR_env}-state.conf
+terraform plan -var-file=environment/${TF_VAR_env}.tfvars
+terraform apply -var-file=environment/${TF_VAR_env}.tfvars
+```
+
+## Cleanup
+
+```bash
+# Delete ecs-service
+export TF_VAR_env=dev
+cd ecs-service
+terraform destroy -var-file=environment/${TF_VAR_env}.tfvars
+rm -rf .terraform
+# Delete ecs-cluster
+export TF_VAR_env=dev
+cd ecs-cluster-setup
+terraform destroy -var-file=environment/${TF_VAR_env}.tfvars
+rm -rf .terraform
+# Delete base infra
+export TF_VAR_env=prod
+cd base_aws_setup
+terraform destroy -var-file=environment/${TF_VAR_env}.tfvars
+rm -rf .terraform
 ```

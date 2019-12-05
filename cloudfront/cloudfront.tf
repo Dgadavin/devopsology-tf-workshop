@@ -42,7 +42,7 @@ resource "aws_s3_bucket" "origin" {
   bucket        = "${var.bucket}"
   acl           = "private"
   force_destroy = "${var.origin_force_destroy}"
-  region        = "eu-west-1"
+  region        = "us-east-1"
 
   cors_rule {
     allowed_headers = "${var.cors_allowed_headers}"

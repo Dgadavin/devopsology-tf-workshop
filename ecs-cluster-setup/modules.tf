@@ -3,19 +3,19 @@ data "terraform_remote_state" "base-stack" {
   config = {
     bucket = "@@bucket@@"
     key    = "baseSetup/terraform.tfstate"
-    region = "eu-west-1"
+    region = "us-east-1"
   }
 }
 
 resource "aws_ecs_cluster" "ecs-cluster" {
-  name = "${var.ClusterName}-${var.environment}"
+  name = "${var.ClusterName}"
 }
 
 data "template_file" "user_data" {
   template = "${file("templates/user_data.sh")}"
 
   vars {
-    cluster_name = "${var.ClusterName}-${var.environment}"
+    cluster_name = "${var.ClusterName}"
   }
 }
 
@@ -35,7 +35,6 @@ module "alb-internal" {
 
 module "alb-external" {
   source = "../terraform-modules//alb"
-  jenkins_listener = true
   alb_name = "${var.ClusterName}-external"
   subnet_ids = "${split(",", lookup(data.terraform_remote_state.base-stack.SubnetIdsMap, "${var.environment}"))}"
   environment = "${var.environment}"

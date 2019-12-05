@@ -1,4 +1,4 @@
-Environment = "DEV"
+Environment = "dev"
 # Application
 HostedZone = "dev.ds.glomex.cloud."
 main_cluster_stack_name = "mainClusterDev"

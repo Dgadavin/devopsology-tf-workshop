@@ -26,13 +26,9 @@ output "ClusterInternetFacingLoadBalancerHttpListener" {
   value = "${module.alb-external.ApplicationLoadBalancerHttpListener}"
 }
 
-output "ClusterInternetFacingLoadBalancerHttpsListener" {
-  value = "${module.alb-external.ApplicationLoadBalancerHttpsListener}"
-}
-
-output "ClusterInternetFacingLoadBalancerJenkinHookListener" {
-  value = "${module.alb-external.ApplicationLoadBalancerJenkinsHookListener}"
-}
+# output "ClusterInternetFacingLoadBalancerHttpsListener" {
+#   value = "${module.alb-external.ApplicationLoadBalancerHttpsListener}"
+# }
 
 output "ClusterInternetFacingLoadBalancerDNSName" {
   value = "${module.alb-external.ApplicationLoadBalancerDNSName}"
@@ -46,9 +42,9 @@ output "ClusterInternalLoadBalancerHttpListener" {
   value = "${module.alb-internal.ApplicationLoadBalancerHttpListener}"
 }
 
-output "ClusterInternalLoadBalancerHttpsListener" {
-  value = "${module.alb-internal.ApplicationLoadBalancerHttpsListener}"
-}
+# output "ClusterInternalLoadBalancerHttpsListener" {
+#   value = "${module.alb-internal.ApplicationLoadBalancerHttpsListener}"
+# }
 
 output "ClusterInternalLoadBalancerDNSName" {
   value = "${module.alb-internal.ApplicationLoadBalancerDNSName}"
