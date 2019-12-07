@@ -55,7 +55,7 @@ terraform apply
 ### Create S3 bucket for storing states
 
 ```bash
-aws s3 create-bucket --bucket terraform-itea-workshop-<YOUR_NAME> --region us-east-1
+aws s3api create-bucket --bucket terraform-itea-workshop-<YOUR_NAME> --region us-east-1
 ```
 
 ### Config remote state
