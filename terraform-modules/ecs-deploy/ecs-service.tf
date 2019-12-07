@@ -1,18 +1,17 @@
 resource "aws_ecs_service" "ECSService" {
-  count = "${var.lb_enabled ? 1 : 0}"
+  count = var.lb_enabled ? 1 : 0
   name            = "${var.service_name}"
   cluster         = "${var.cluster_id}"
   task_definition = "${var.task_definition_arn}"
   desired_count   = "${var.desire_count}"
   iam_role        = "${var.service_iam_role}"
-  scheduling_strategy = "${var.scheduling_strategy}"
   deployment_maximum_percent = "${var.deployment_maximum_percent}"
   deployment_minimum_healthy_percent = "${var.deployment_minimum_healthy_percent}"
   lifecycle {
     ignore_changes = ["desired_count"]
   }
   load_balancer {
-    target_group_arn = "${aws_lb_target_group.TargetGroup.arn}"
+    target_group_arn = "${aws_lb_target_group.TargetGroup[count.index].arn}"
     container_name   = "${var.container_name}"
     container_port   = "${var.container_port}"
   }
@@ -28,7 +27,7 @@ resource "aws_ecs_service" "ECSService" {
 }
 
 resource "aws_ecs_service" "ECSServiceWithoutLB" {
-  count = "${!var.lb_enabled ? 1 : 0}"
+  count = var.lb_enabled ? 0 : 1
   name            = "${var.service_name}"
   cluster         = "${var.cluster_id}"
   task_definition = "${var.task_definition_arn}"
@@ -49,7 +48,7 @@ resource "aws_ecs_service" "ECSServiceWithoutLB" {
 }
 
 resource "aws_appautoscaling_target" "AppAsgTarget" {
-  count = "${var.app_autoscaling_enabled ? 1 : 0}"
+  count = var.app_autoscaling_enabled ? 1 : 0
   max_capacity       = "${var.scale_max_capacity}"
   min_capacity       = "${var.scale_min_capacity}"
   resource_id        = "${var.lb_enabled ? format("%s%s%s%s", "service/", "${var.cluster_id}", "/", join(" ", aws_ecs_service.ECSService.*.name)) : format("%s%s%s%s", "service/", "${var.cluster_id}", "/", join(" ", aws_ecs_service.ECSServiceWithoutLB.*.name))}"
@@ -59,7 +58,7 @@ resource "aws_appautoscaling_target" "AppAsgTarget" {
 }
 
 resource "aws_appautoscaling_policy" "scale-down" {
-  count = "${var.app_autoscaling_enabled ? 1 : 0}"
+  count = var.app_autoscaling_enabled ? 1 : 0
   name                    = "scale-down-${var.service_name}"
   policy_type             = "StepScaling"
   resource_id             = "${var.lb_enabled ? format("%s%s%s%s", "service/", "${var.cluster_id}", "/", join(" ", aws_ecs_service.ECSService.*.name)) : format("%s%s%s%s", "service/", "${var.cluster_id}", "/", join(" ", aws_ecs_service.ECSServiceWithoutLB.*.name))}"
@@ -81,7 +80,7 @@ resource "aws_appautoscaling_policy" "scale-down" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "EcsLowAlarm" {
-  count = "${var.app_autoscaling_enabled ? 1 : 0}"
+  count = var.app_autoscaling_enabled ? 1 : 0
   alarm_name          = "${var.service_name}-EcsLowAlarm"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = "1"
@@ -91,17 +90,17 @@ resource "aws_cloudwatch_metric_alarm" "EcsLowAlarm" {
   statistic           = "Average"
   threshold           = "${var.scale_in_threshold}"
 
-  dimensions {
+  dimensions = {
     ClusterName = "${var.cluster_id}"
     ServiceName = "${var.lb_enabled ? join(" ", aws_ecs_service.ECSService.*.name) : join(" ", aws_ecs_service.ECSServiceWithoutLB.*.name)}"
   }
 
   alarm_description = "This metric monitors ecs cpu utilization"
-  alarm_actions     = ["${aws_appautoscaling_policy.scale-down.arn}"]
+  alarm_actions     = ["${aws_appautoscaling_policy.scale-down[count.index].arn}"]
 }
 
 resource "aws_appautoscaling_policy" "scale-up" {
-  count = "${var.app_autoscaling_enabled ? 1 : 0}"
+  count = var.app_autoscaling_enabled ? 1 : 0
   name                    = "scale-up-${var.service_name}"
   policy_type             = "StepScaling"
   resource_id             = "${var.lb_enabled ? format("%s%s%s%s", "service/", "${var.cluster_id}", "/", join(" ", aws_ecs_service.ECSService.*.name)) : format("%s%s%s%s", "service/", "${var.cluster_id}", "/", join(" ", aws_ecs_service.ECSServiceWithoutLB.*.name))}"
@@ -123,7 +122,7 @@ resource "aws_appautoscaling_policy" "scale-up" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "EcsHighAlarm" {
-  count = "${var.app_autoscaling_enabled ? 1 : 0}"
+  count = var.app_autoscaling_enabled ? 1 : 0
   alarm_name          = "${var.service_name}-EcsHighAlarm"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "1"
@@ -133,11 +132,11 @@ resource "aws_cloudwatch_metric_alarm" "EcsHighAlarm" {
   statistic           = "Average"
   threshold           = "${var.scale_out_threshold}"
 
-  dimensions {
+  dimensions = {
     ClusterName = "${var.cluster_id}"
     ServiceName = "${var.lb_enabled ? join(" ", aws_ecs_service.ECSService.*.name) : join(" ", aws_ecs_service.ECSServiceWithoutLB.*.name)}"
   }
 
   alarm_description = "This metric monitors ecs cpu utilization"
-  alarm_actions     = ["${aws_appautoscaling_policy.scale-up.arn}"]
+  alarm_actions     = ["${aws_appautoscaling_policy.scale-up[count.index].arn}"]
 }

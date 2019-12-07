@@ -1,10 +1,13 @@
 variable "service_name" {}
 variable "trusted_name" {}
-variable "instance_profile" { default = false }
+variable "instance_profile" {
+  type = bool
+  default = false
+}
 
 data "template_file" "trusted_policy" {
   template = "${file("${path.module}/trusted_policy.json")}"
-    vars {
+    vars = {
       trusted_name = "${var.trusted_name}"
     }
 }
@@ -15,7 +18,7 @@ resource "aws_iam_role" "iam_role" {
 }
 
 resource "aws_iam_instance_profile" "instance_profile" {
-  count = "${var.instance_profile}"
+  count = var.instance_profile ? 1 : 0
   name = "${var.service_name}-instance-profile"
   role = "${aws_iam_role.iam_role.name}"
 }

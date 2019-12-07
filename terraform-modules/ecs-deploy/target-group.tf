@@ -1,5 +1,5 @@
 resource "aws_lb_target_group" "TargetGroup" {
-  count = "${var.lb_enabled ? 1 : 0}"
+  count = var.lb_enabled ? 1 : 0
   name     = "${var.service_name}-tg"
   port     = "${var.tg_port}"
   protocol = "HTTP"
@@ -16,19 +16,20 @@ resource "aws_lb_target_group" "TargetGroup" {
 }
 
 resource "random_integer" "priority" {
-  count = "${var.lb_enabled ? 1 : 0}"
+  count = var.lb_enabled ? 1 : 0
   min     = 1
   max     = 50000
 }
 
 resource "aws_lb_listener_rule" "HTTPListener" {
-  count = "${var.lb_enabled ? 1 : 0}"
+  count = var.lb_enabled ? 1 : 0
+  #depend_on = ["aws_lb_target_group.TargetGroup"]
   listener_arn = "${var.http_listener_arn}"
-  priority     = "${random_integer.priority.result}"
+  priority     = "${random_integer.priority[count.index].result}"
 
   action {
     type             = "forward"
-    target_group_arn = "${aws_lb_target_group.TargetGroup.arn}"
+    target_group_arn = "${aws_lb_target_group.TargetGroup[count.index].arn}"
   }
 
   condition {
@@ -38,13 +39,14 @@ resource "aws_lb_listener_rule" "HTTPListener" {
 }
 
 # resource "aws_lb_listener_rule" "HTTPSListener" {
-#   count = "${var.lb_enabled ? 1 : 0}"
+#   count = var.lb_enabled ? 1 : 0
+#   #depend_on = ["aws_lb_target_group.TargetGroup"]
 #   listener_arn = "${var.https_listener_arn}"
-#   priority     = "${random_integer.priority.result}"
+#   priority     = "${random_integer.priority[count.index].result}"
 #
 #   action {
 #     type             = "forward"
-#     target_group_arn = "${aws_lb_target_group.TargetGroup.arn}"
+#     target_group_arn = "${aws_lb_target_group.TargetGroup[count.index].arn}"
 #   }
 #
 #   condition {

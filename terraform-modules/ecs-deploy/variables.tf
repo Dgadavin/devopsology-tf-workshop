@@ -1,6 +1,12 @@
 variable "service_name" {}
-variable "app_autoscaling_enabled" { default = 1 }
-variable "lb_enabled" { default = 1 }
+variable "app_autoscaling_enabled" {
+  type = bool
+  default = true
+}
+variable "lb_enabled" {
+  type = bool
+  default = true
+}
 variable "container_name" {}
 variable "cluster_id" {}
 variable "task_definition_arn" {}
@@ -19,12 +25,11 @@ variable "scale_out_adjustment" { default = 2 }
 variable "scale_in_adjustment" { default = -2 }
 variable "autoscaling_iam_role_arn" { default = "" }
 variable "task_spread_strategy" { default = "default" }
-variable "scheduling_strategy" { default = "REPLICA" }
 # Target group vars
 variable "tg_port" { default = 80 }
 variable "vpc_id" { default = "" }
-variable "health_path" { default = "/" }
-variable "health_check_interval" { default = 60 }
+variable "health_path" { default = "/release" }
+variable "health_check_interval" { default = 30 }
 variable "health_check_timeout" { default = 5 }
 variable "health_check_healthy_threshold" { default = 3 }
 variable "health_check_unhealthy_threshold" { default = 3 }

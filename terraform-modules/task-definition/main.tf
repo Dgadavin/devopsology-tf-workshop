@@ -2,13 +2,16 @@ variable "network_mode" { default = "bridge" }
 variable "family" {}
 variable "task_template" {}
 variable "task_role_arn" {}
-variable "isVolume" { default = false }
+variable "isVolume" {
+  type = bool
+  default = false
+}
 variable "volume_name" { default = "base_volume" }
 variable "volume_path" { default = "/etc" }
 variable "execution_role_arn" { default = "" }
 
 resource "aws_ecs_task_definition" "TaskDefinitionWithVol" {
-  count = "${var.isVolume}"
+  count = var.isVolume ? 1 : 0
   family = "${var.family}"
   container_definitions = "${var.task_template}"
   task_role_arn = "${var.task_role_arn}"
@@ -21,7 +24,7 @@ resource "aws_ecs_task_definition" "TaskDefinitionWithVol" {
 }
 
 resource "aws_ecs_task_definition" "TaskDefinition" {
-  count = "${var.isVolume ? 0 : 1}"
+  count = var.isVolume ? 0 : 1
   family = "${var.family}"
   container_definitions = "${var.task_template}"
   task_role_arn = "${var.task_role_arn}"

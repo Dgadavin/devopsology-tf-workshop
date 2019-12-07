@@ -1,11 +1,14 @@
 variable "elb_dns_name" {}
 variable "domain_hosted_zone_id" {}
 variable "load_balancer_dns_name" {}
-variable "canonical_hosted_zone_id" {}
-variable "dns_create" { default = true }
+variable "canonical_hosted_zone_id" { default = "Z32O12XQLNTSW2" }
+variable "dns_create" {
+  type = bool
+  default = true
+}
 
 resource "aws_route53_record" "AliasRecord" {
-  count = "${var.dns_create ? 1 : 0}"
+  count = var.dns_create ? 1 : 0
   zone_id = "${var.domain_hosted_zone_id}"
   name    = "${var.elb_dns_name}"
   type    = "A"

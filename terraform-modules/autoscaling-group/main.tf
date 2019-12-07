@@ -2,10 +2,8 @@ resource "aws_launch_configuration" "launch_configuration" {
   name_prefix          = "${var.name}"
   image_id             = "${var.aws_ami}"
   instance_type        = "${var.instance_type}"
-  security_groups      = ["${var.security_groups}"]
+  security_groups      = var.security_groups
   user_data            = "${var.user_data}"
-  key_name             = "${var.ssh_key_name}"
-  spot_price           = "${var.spot_price}"
   iam_instance_profile = "${var.iam_instance_profile_arn}"
   enable_monitoring    = "${var.enable_monitoring}"
   root_block_device {
@@ -17,13 +15,13 @@ resource "aws_launch_configuration" "launch_configuration" {
 }
 
 resource "aws_autoscaling_group" "autoscaling_group" {
-  name                 = "${var.name}-${var.environment}-${aws_launch_configuration.launch_configuration.name}"
+  name                 = "${var.name}-${var.environment}"
   launch_configuration = "${aws_launch_configuration.launch_configuration.name}"
   max_size             = "${var.scale_max_capacity}"
   min_size             = "${var.scale_min_capacity}"
   desired_capacity     = "${var.desired_capacity}"
   availability_zones   = "${var.availability_zones}"
-  vpc_zone_identifier  = ["${var.subnet_ids}"]
+  vpc_zone_identifier  = "${var.subnet_ids}"
   lifecycle {
     create_before_destroy = true
   }
