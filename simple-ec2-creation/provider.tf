@@ -5,10 +5,10 @@ provider "aws" {
 # provider "random" {
 # }
 # //
-# terraform {
-#   backend "s3" {
-#   #   bucket = "terraform-dp-dev-state"
-#   #   key = "ec2/tf.state"
-#   #   # region = "us-east-2"
-#   }
-# }
+terraform {
+  backend "s3" {
+    bucket = "terraform-itea-workshop-max"
+    key = "new-state/tf.state"
+    region = "us-east-1"
+  }
+}

@@ -7,6 +7,12 @@
 #     protocol          = "TCP"
 #     cidr_blocks       = ["0.0.0.0/0"]
 #   }
+#   ingress {
+#     from_port         = 1199
+#     to_port           = 1199
+#     protocol          = "TCP"
+#     cidr_blocks       = ["10.0.0.0/24"]
+#   }
 #   egress {
 #     from_port         = 0
 #     to_port           = 0
