@@ -48,7 +48,7 @@ resource "aws_autoscaling_lifecycle_hook" "autoscaling_lifecycle_hook" {
 
 resource "aws_autoscaling_policy" "autoscaling_policy_up" {
   name                   = "${var.name}-${var.environment}-ap-up"
-  scaling_adjustment     = 1
+  scaling_adjustment     = 3
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
   policy_type            = "SimpleScaling"
