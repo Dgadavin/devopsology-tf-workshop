@@ -39,12 +39,6 @@ resource "aws_security_group" "external-load-balancer" {
     protocol          = "TCP"
     cidr_blocks       = ["0.0.0.0/0"]
   }
-  ingress {
-    from_port         = 8080
-    to_port           = 8080
-    protocol          = "TCP"
-    cidr_blocks       = ["134.209.90.48/32"]
-  }
   egress {
     from_port         = 0
     to_port           = 0

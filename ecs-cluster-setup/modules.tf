@@ -9,6 +9,10 @@ data "terraform_remote_state" "base-stack" {
 
 resource "aws_ecs_cluster" "ecs-cluster" {
   name = "${var.ClusterName}"
+  setting {
+    name = "containerInsights"
+    value = "enabled"
+  }
 }
 
 data "template_file" "user_data" {
